@@ -1,0 +1,92 @@
+
+
+
+
+<div class=" mb-3 nav-scroller bg-white box-shadow">
+  <nav class="nav nav-underline">
+    <form class="form-inline my-2 my-lg-0">
+       <input type="search" (ngModelChange)="searchAnonces(key.value)" #key="ngModel" ngModel
+        name="key" id="searchName" class="form-control mr-sm-2" placeholder="Cherche les anonces..." required>
+    </form>
+  </nav>
+</div>
+
+
+
+
+
+<div class="container" id="main-container">
+   <div class="row">
+     <div *ngFor="let anonce of anonces" class="col-md-6 col-xl-3">
+        <div class="card m-b-30">
+           <div class="card-body row">
+              <div class="col-6">
+                 <a href=""><img src="anonce?.imageUrl" alt="" class="img-fluid rounded-circle w-60"></a>
+              </div>
+              <div class="col-6 card-title align-self-center mb-0">
+                 <h5>{{anonce?.idUser?.username}}</h5>
+              </div>
+           </div>
+           <ul class="list-group list-group-flush">
+            <li class="list-group-item"><i class="fa fa-envelope float-right"></i>Vehicule: {{anonce?.idVehicule?.name}}</li>
+              <li class="list-group-item"><i class="fa fa-envelope float-right"></i>Nombres places reste : {{anonce?.nbPlace}}</li>
+              <li class="list-group-item"><i class="fa fa-envelope float-right"></i>Date : {{anonce?.date}}</li>
+              <li class="list-group-item"><i class="fa fa-envelope float-right"></i>Heur debute : {{anonce?.hDebut}}</li>
+              <li class="list-group-item"><i class="fa fa-boite float-right"></i>Ville Depart : {{anonce?.idVilleDepart?.nom}}</li>
+              <li class="list-group-item"><i class="fa fa-boite float-right"></i>Ville Arrive : {{anonce?.idVilleArrive?.nom}}</li>
+           </ul>
+           <div class="col-6 card-title mb-0">
+            <h5>Reservations : </h5>
+         </div>
+         <ul  *ngFor="let reservation of anonce?.reservations" class="list-group list-group-flush">
+            <li class="list-group-item"><i class="fa fa-boite float-right"></i>{{reservation?. idReservant?.username}}</li>
+         </ul>
+
+
+           <div class="card-body">
+            <div class="float-right btn-group btn-group-sm">
+              <a (click)="onOpenModal(anonce, 'reserve')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-ticket"></i> </a>
+            </div>
+           </div>
+        </div>
+     </div>
+   </div>
+   
+
+
+  <!-- Reserve anonce Modal -->
+  <div class="modal fade" id="reserveAnonceModal" tabindex="-1" role="dialog" aria-labelledby="reserveModelLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="reserveModelLabel">Reserve Anonce</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <p>Est ce que vous voulez reserver l'anonce</p>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+               <button (click)="onReserveAnonce(reserveAnonce!, utilisateurOne!)" class="btn btn-danger" data-dismiss="modal">Oui</button>
+            </div>
+         </div>
+      </div>
+   </div>
+ </div> 
+
+
+
+
+
+
+
+    
+    <!-- Notification for no anonces -->
+    <div *ngIf="anonces?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+    <div class="alert alert-info" role="alert">
+      <h4 class="alert-heading">NO EMPLOYEES!</h4>
+      <p>No Anonces were found.</p>
+</div>
+</div>
+

@@ -1,0 +1,234 @@
+
+
+
+
+<div class=" mb-3 nav-scroller bg-white box-shadow">
+   <nav class="nav nav-underline">
+     <a class="nav-link"*ngIf="isLoggedIn" (click)="onOpenAddModal()">Add Anonce <span class="sr-only">(current)</span></a>  
+     <form class="form-inline my-2 my-lg-0">
+        <input type="search" (ngModelChange)="searchAnonces(key.value)" #key="ngModel" ngModel
+         name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search anonces..." required>
+     </form>
+   </nav>
+ </div>
+
+
+
+
+ 
+<div class="container" id="main-container">
+    <div class="row">
+      <div *ngFor="let anonce of anonces" class="col-md-6 col-xl-3">
+         <div class="card m-b-30">
+            <div class="card-body row">
+               <div class="col-6">
+                  <a href=""><img src="anonce?.imageUrl" alt="" class="img-fluid rounded-circle w-60"></a>
+               </div>
+               <div class="col-6 card-title align-self-center mb-0">
+                  <h5>{{anonce?.idUser?.username}}</h5>
+               </div>
+            </div>
+            <ul class="list-group list-group-flush">
+               <li class="list-group-item"><i class="fa fa-envelope float-right"></i>Nombre place : {{anonce?.nbPlace}}</li>
+               <li class="list-group-item"><i class="fa fa-envelope float-right"></i>Date : {{anonce?.date}}</li>
+               <li class="list-group-item"><i class="fa fa-envelope float-right"></i>Heur debute : {{anonce?.hDebut}}</li>
+               <li class="list-group-item"><i class="fa fa-boite float-right"></i>Ville Depart : {{anonce?.idVilleDepart?.nom}}</li>
+               <li class="list-group-item"><i class="fa fa-boite float-right"></i>Ville Arrive : {{anonce?.idVilleArrive?.nom}}</li>
+            </ul>
+            <div class="col-6 card-title mb-0">
+               <h5>Reservations : </h5>
+            </div>
+            <ul  *ngFor="let reservation of anonce?.reservations" class="list-group list-group-flush">
+               <li class="list-group-item"><i class="fa fa-boite float-right"></i>{{reservation?. idReservant?.username}}</li>
+            </ul>
+            <div class="card-body">
+             <div class="float-right btn-group btn-group-sm">
+               <a (click)="onOpenModal(anonce, 'reserve')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-ticket"></i> </a>
+                <a (click)="onOpenModal(anonce, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+                <a (click)="onOpenModal(anonce, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-original-title="Delete"><i class="fa fa-times"></i></a>
+             </div>
+            </div>
+         </div>
+      </div>
+    </div>
+    
+
+
+
+   <!-- Reserve anonce Modal -->
+   <div class="modal fade" id="reserveAnonceModal" tabindex="-1" role="dialog" aria-labelledby="reserveModelLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="reserveModelLabel">Reserve Anonce</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <div class="modal-body">
+               <p>Est ce que vous voulez reserver l'anonce</p>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                  <button (click)="onReserveAnonce(reserveAnonce!, utilisateurOne!)" class="btn btn-danger" data-dismiss="modal">Oui</button>
+               </div>
+            </div>
+         </div>
+      </div>
+    </div> 
+
+
+
+
+
+
+
+    
+    <!-- Add Anonce Modal -->
+    <div class="modal fade" id="addAnonceModal" tabindex="-1" role="dialog" aria-labelledby="addAnonceModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="addAnonceModalLabel">Add Anonce</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            
+            <div class="modal-body">
+               <form #addForm="ngForm" (ngSubmit)="onAddAnonce(addForm)">
+              
+
+               <div class="form-group">
+                  <select [ngModel]="editAnonce?.idUser" name="idUser" class="form-control" id="idUser" required>
+                    <option *ngFor="let user of users" [ngValue]="user">
+                       {{user?.username}}
+                    </option>
+                  </select>
+                 </div>
+
+
+               <div class="form-group">
+                  <label for="nbPlace">nombre place</label>
+                  <input type="text" ngModel name="nbPlace" class="form-control" id="nbPlace" placeholder="Nombre Place" required>
+               </div>
+
+               <div class="form-group">
+                  <label for="date">Date</label>
+                  <input type="date" ngModel name="date" class="form-control" id="date" placeholder="Date" required>
+               </div>
+
+               <div class="form-group">
+                  <label for="hDebut">Heure debute</label>
+                  <input type="time" ngModel name="hDebut" class="form-control" id="hDebut" placeholder="Heure debut" required>
+               </div>
+
+               <div class="form-group">
+                  <label for="idVilleDepart">Ville depart</label>
+                  <select [ngModel]="editAnonce?.idVilleDepart" name="idVilleDepart" class="form-control" id="idVilleDepart" required>
+                     <option *ngFor="let ville of villes" [ngValue]="ville">
+                       {{ville?.nom}}
+                    </option>
+                  </select>
+                 </div>
+      
+                 <div class="form-group">
+                  <label for="idVilleArrive">Ville arrive</label>
+                  <select [ngModel]="editAnonce?.idVilleArrive" name="idVilleArrive" class="form-control" id="idVilleArrive" required>
+                     <option *ngFor="let ville of villes" [ngValue]="ville">
+                       {{ville?.nom}}
+                    </option>
+                  </select>
+                 </div>
+              
+               <div class="modal-footer">
+                  <button type="button" id="add-anonce-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+               </div>
+               </form>
+            </div>
+         </div>
+       </div>
+       </div>
+     
+     <!-- Edit Modal -->
+     <div class="modal fade" id="updateAnonceModal" tabindex="-1" role="dialog" aria-labelledby="anonceEditModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+          <div class="modal-content">
+             <div class="modal-header">
+                <h5 class="modal-title" id="updateAnonceModalLabel">Editer l'Anonce</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+             </div>
+             <div class="modal-body">
+                <form #editForm="ngForm">
+                   <div class="form-group">
+                      <label for="name"></label>
+                      <input type="text" ngModel="{{editAnonce?.nbPlace}}" name="nbPlace" class="form-control" id="nbPlace" aria-describedby="typeHelp" placeholder="nombre place" required>
+                   </div>
+                   <input type="hidden" ngModel="{{editAnonce?.id}}" name="id" class="form-control" id="id" placeholder="id">
+               
+                   <div class="form-group">
+                   <select [ngModel]="editAnonce?.idUser" name="idUser" class="form-control" id="idUser" required>
+                     <option *ngFor="let user of users" [ngValue]="user">
+                        {{user?.username}}
+                     </option>
+                   </select>
+                  </div>
+
+                  <div class="form-group">
+                     <label for="idVilleDepart">Ville depart</label>
+                     <select [ngModel]="editAnonce?.idVilleDepart" name="idVilleDepart" class="form-control" id="idVilleDepart" required>
+                        <option *ngFor="let ville of villes" [ngValue]="ville">
+                          {{ville?.nom}}
+                       </option>
+                     </select>
+                    </div>
+         
+                    <div class="form-group">
+                     <label for="idVilleArrive">Ville arrive</label>
+                     <select [ngModel]="editAnonce?.idVilleArrive" name="idVilleArrive" class="form-control" id="idVilleArrive" required>
+                        <option *ngFor="let ville of villes" [ngValue]="ville">
+                          {{ville?.nom}}
+                       </option>
+                     </select>
+                    </div>
+                   <div class="modal-footer">
+                      <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                      <button (click)="onUpdateAnonce(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+                   </div>
+                </form>
+             </div>
+          </div>
+       </div>
+     </div>
+     
+     <!-- Delete Modal -->
+     <div class="modal fade" id="deleteAnonceModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+          <div class="modal-content">
+             <div class="modal-header">
+                <h5 class="modal-title" id="deleteModelLabel">Delete Anonce</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+             </div>
+             <div class="modal-body">
+                <p>Est ce que vous voulez supprimer l'anonce</p>
+                <div class="modal-footer">
+                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                   <button (click)="onDeleteAnonce(deleteAnonce!.id)" class="btn btn-danger" data-dismiss="modal">Oui</button>
+                </div>
+             </div>
+          </div>
+       </div>
+     </div> 
+     </div>
+     
+     <!-- Notification for no anonces -->
+     <div *ngIf="anonces?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+     <div class="alert alert-info" role="alert">
+       <h4 class="alert-heading">NO EMPLOYEES!</h4>
+       <p>No Anonces were found.</p>
+ </div>
+</div>
